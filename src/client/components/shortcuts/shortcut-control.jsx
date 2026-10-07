@@ -164,6 +164,15 @@ class ShortcutControl extends React.PureComponent {
     window.store.cloneToNextLayout()
   }, 500)
 
+  toggleBroadcastInputShortcut = throttle((e) => {
+    e.stopPropagation()
+    const { activeTabId } = window.store
+    // only terminal sessions can broadcast input
+    if (refs.get('term-' + activeTabId)) {
+      refs.get('session-' + activeTabId)?.toggleBroadcastInput()
+    }
+  }, 300)
+
   nextLayoutShortcut = throttle((e) => {
     e.stopPropagation()
     window.store.cycleLayout(1)

@@ -37,6 +37,11 @@ export default () => {
       shortcutMac: 'shift+alt+/'
     },
     {
+      name: 'app_toggleBroadcastInput',
+      shortcut: 'ctrl+alt+b',
+      shortcutMac: 'ctrl+alt+b'
+    },
+    {
       name: 'app_nextLayout',
       shortcut: 'ctrl+alt+]',
       shortcutMac: 'ctrl+alt+]'

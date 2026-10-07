@@ -56,7 +56,8 @@ async function load () {
   const fallbackText = {
     moveToNextLayout: 'Move to next layout',
     nextLayout: 'Next layout',
-    prevLayout: 'Previous layout'
+    prevLayout: 'Previous layout',
+    toggleBroadcastInput: 'Toggle broadcast input'
   }
   window.translate = txt => {
     const lang = window.getLang()
