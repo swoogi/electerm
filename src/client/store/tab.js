@@ -491,12 +491,89 @@ export default Store => {
     }
     ntb.batch = (currentLayoutBatch + 1) % maxBatch
     if (layout === 'c1') {
-      store.setLayout('c2')
+      store.setLayout('c2', false)
     }
     store.addTab(ntb)
   }
 
-  Store.prototype.setLayout = function (layout) {
+  Store.prototype.moveToNextLayout = function (tab = window.store.currentTab) {
+    if (!tab) {
+      return
+    }
+    const { store } = window
+    if (store.layout === 'c1') {
+      store.setLayout('c2', false)
+    }
+    const maxBatch = Math.max(splitConfig[store.layout].children, 2)
+    const from = tab.batch
+    const to = (from + 1) % maxBatch
+    if (from === to) {
+      return
+    }
+    const target = store.tabs.find(t => t.id === tab.id)
+    if (!target) {
+      return
+    }
+    target.batch = to
+    // the source pane needs another active tab, or it renders empty
+    if (store[`activeTabId${from}`] === tab.id) {
+      const rest = store.tabs.filter(t => t.batch === from)
+      store[`activeTabId${from}`] = rest.length ? rest[rest.length - 1].id : ''
+    }
+    store[`activeTabId${to}`] = tab.id
+    store.activeTabId = tab.id
+    store.currentLayoutBatch = to
+    store.focus()
+  }
+
+  // spread tabs over panes after switching to a layout with more panes
+  Store.prototype.distributeTabs = function (prevCount, newCount) {
+    const { store } = window
+    const { tabs } = store
+    if (tabs.length < 2) {
+      return
+    }
+    if (prevCount <= 1) {
+      // contiguous chunks keep the tab order: [A B C D E] -> [A B] [C D] [E]
+      const size = Math.ceil(tabs.length / newCount)
+      tabs.forEach((t, i) => {
+        t.batch = Math.min(Math.floor(i / size), newCount - 1)
+      })
+      return
+    }
+    // keep the user's arrangement, only fill the new empty panes
+    for (let b = prevCount; b < newCount; b++) {
+      const counts = Array.from({ length: b }, (_, i) =>
+        tabs.filter(t => t.batch === i).length
+      )
+      const max = Math.max(...counts)
+      if (max < 2) {
+        break
+      }
+      const donor = counts.indexOf(max)
+      const donorTabs = tabs.filter(t => t.batch === donor)
+      donorTabs[donorTabs.length - 1].batch = b
+    }
+  }
+
+  // make sure every pane has a valid active tab
+  Store.prototype.fixActiveTabIds = function (count) {
+    const { store } = window
+    for (let b = 0; b < count; b++) {
+      const inBatch = store.tabs.filter(t => t.batch === b)
+      const key = `activeTabId${b}`
+      if (!inBatch.some(t => t.id === store[key])) {
+        store[key] = inBatch.length ? inBatch[0].id : ''
+      }
+    }
+    const active = store.tabs.find(t => t.id === store.activeTabId)
+    if (active) {
+      store[`activeTabId${active.batch}`] = active.id
+      store.currentLayoutBatch = active.batch
+    }
+  }
+
+  Store.prototype.setLayout = function (layout, redistribute = true) {
     const { store } = window
     const prevLayout = store.layout
     const { activeTabId } = store
@@ -533,7 +610,10 @@ export default Store => {
       if (store.currentLayoutBatch >= newBatchCount) {
         store.currentLayoutBatch = newBatchCount - 1
       }
+    } else if (redistribute && newBatchCount > prevBatchCount) {
+      store.distributeTabs(prevBatchCount, newBatchCount)
     }
+    store.fixActiveTabIds(newBatchCount)
     store.focus()
   }
 

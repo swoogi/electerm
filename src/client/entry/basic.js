@@ -52,9 +52,13 @@ async function load () {
   window.getLang = (lang = window.store?.config.language || window.initLanguage || 'en_us') => {
     return _get(window.langMap, `[${lang}].lang`)
   }
+  // keys not yet in the electerm-locales package
+  const fallbackText = {
+    moveToNextLayout: 'Move to next layout'
+  }
   window.translate = txt => {
     const lang = window.getLang()
-    const str = _get(lang, `[${txt}]`) || txt
+    const str = _get(lang, `[${txt}]`) || fallbackText[txt] || txt
     return window.capitalizeFirstLetter(str)
   }
   await loadWorker()

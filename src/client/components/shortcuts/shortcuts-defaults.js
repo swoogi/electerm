@@ -1,3 +1,8 @@
+import { splitMap } from '../../common/constants'
+
+// order matches the layout menu; shortcut names are `app_layout<key>`
+export const layoutShortcutKeys = Object.keys(splitMap)
+
 export default () => {
   return [
     {
@@ -26,6 +31,16 @@ export default () => {
       shortcut: 'alt+/',
       shortcutMac: 'alt+/'
     },
+    {
+      name: 'app_moveToNextLayout',
+      shortcut: 'shift+alt+/',
+      shortcutMac: 'shift+alt+/'
+    },
+    ...layoutShortcutKeys.map((key, i) => ({
+      name: `app_layout${key}`,
+      shortcut: `ctrl+alt+${i + 1}`,
+      shortcutMac: `ctrl+alt+${i + 1}`
+    })),
     {
       name: 'app_duplicateTab',
       shortcut: 'alt+c',

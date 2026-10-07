@@ -6,7 +6,7 @@ import {
   Table,
   Button
 } from 'antd'
-import { isMacJs as isMac } from '../../common/constants.js'
+import { isMacJs as isMac, splitMapDesc } from '../../common/constants.js'
 import {
   getKeysTakenData
 } from './shortcut-utils.js'
@@ -63,6 +63,9 @@ export default class Shortcuts extends PureComponent {
         render: (name) => {
           const [a, b] = name.split('_')
           const pre = a === 'terminal' ? `[${e('terminal')}] ` : ''
+          if (b.startsWith('layout')) {
+            return `${e('layout')}: ${e(splitMapDesc[b.slice(6)])}`
+          }
           return pre + e(b)
         }
       },

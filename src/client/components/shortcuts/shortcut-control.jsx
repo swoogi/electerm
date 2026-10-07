@@ -5,6 +5,7 @@
 
 import React from 'react'
 import { shortcutExtend } from './shortcut-handler.js'
+import { layoutShortcutKeys } from './shortcuts-defaults.js'
 import { throttle } from 'lodash-es'
 import {
   typeMap
@@ -23,6 +24,20 @@ function isInputActive () {
 }
 
 class ShortcutControl extends React.PureComponent {
+  // layoutc1Shortcut, layoutc2Shortcut ... one per layout
+  static layoutHandlers = layoutShortcutKeys.reduce((p, key) => {
+    p[`layout${key}Shortcut`] = throttle((e) => {
+      e.stopPropagation()
+      window.store.setLayout(key)
+    }, 500)
+    return p
+  }, {})
+
+  constructor (props) {
+    super(props)
+    Object.assign(this, ShortcutControl.layoutHandlers)
+  }
+
   componentDidMount () {
     const onEvent = this.handleKeyboardEvent.bind(this)
     document.addEventListener('keydown', this.onEvent, true)
@@ -147,6 +162,11 @@ class ShortcutControl extends React.PureComponent {
   cloneToNextLayoutShortcut = throttle((e) => {
     e.stopPropagation()
     window.store.cloneToNextLayout()
+  }, 500)
+
+  moveToNextLayoutShortcut = throttle((e) => {
+    e.stopPropagation()
+    window.store.moveToNextLayout()
   }, 500)
 
   duplicateTabShortcut = throttle((e) => {
