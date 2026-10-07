@@ -177,6 +177,10 @@ export function shortcutExtend (Cls) {
     if (event.isComposing) {
       return
     }
+    if (this.handleSessionStoppedKey?.(event)) {
+      event.preventDefault()
+      return false
+    }
     if (handleTerminalSelectionReplace(event, this)) {
       return false
     }

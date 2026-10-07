@@ -188,6 +188,7 @@ export const socketMixin = {
         return
       }
       this.setStatus(statusMap.error)
+      this.showSessionStopped()
       return
     }
     this.port = r.port
@@ -319,10 +320,49 @@ export const socketMixin = {
     if (this.userTypeExit) {
       return this.props.delTab(this.props.tab.id)
     }
+    this.showSessionStopped()
     const { autoReconnectTerminal } = this.props.config
     if (autoReconnectTerminal) {
       this.scheduleAutoReconnect(3000)
     }
+  },
+
+  // MobaXterm style notice, keys are handled in handleSessionStoppedKey
+  showSessionStopped () {
+    const { term } = this
+    if (!term || this.sessionStopped) {
+      return
+    }
+    this.sessionStopped = true
+    const t = window.translate
+    term.write(
+      '\r\n\r\n\x1b[1;37;41m ' + t('sessionStopped') + ' \x1b[0m\r\n' +
+      '\x1b[33m  - ' + t('pressEnterToCloseTab') + '\r\n' +
+      '  - ' + t('pressRToRestart') + '\x1b[0m\r\n'
+    )
+    term.scrollToBottom()
+  },
+
+  /**
+   * after the session stopped: Enter closes the tab, R restarts the session
+   * @returns {boolean} true if the key was handled
+   */
+  handleSessionStoppedKey (event) {
+    const { key, type, ctrlKey, altKey, metaKey } = event
+    if (!this.sessionStopped || type !== 'keydown' || ctrlKey || altKey || metaKey) {
+      return false
+    }
+    if (key === 'Enter') {
+      this.handleCancelAutoReconnect()
+      this.handleCancel()
+      return true
+    }
+    if (key === 'r' || key === 'R') {
+      this.handleCancelAutoReconnect()
+      this.props.reloadTab(this.props.tab)
+      return true
+    }
+    return false
   },
 
   scheduleAutoReconnect (delay = 3000) {

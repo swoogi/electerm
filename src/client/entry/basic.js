@@ -57,7 +57,10 @@ async function load () {
     moveToNextLayout: 'Move to next layout',
     nextLayout: 'Next layout',
     prevLayout: 'Previous layout',
-    toggleBroadcastInput: 'Toggle broadcast input'
+    toggleBroadcastInput: 'Toggle broadcast input',
+    sessionStopped: 'Session stopped',
+    pressEnterToCloseTab: 'Press <Enter> to close this tab',
+    pressRToRestart: 'Press <R> to restart the session'
   }
   window.translate = txt => {
     const lang = window.getLang()
