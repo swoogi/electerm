@@ -56,6 +56,14 @@ export default class SessionWrapper extends Component {
     }
   }
 
+  componentDidMount () {
+    refs.add('session-' + this.props.tab.id, this)
+  }
+
+  componentWillUnmount () {
+    refs.remove('session-' + this.props.tab.id)
+  }
+
   minWithForSplit = 640
   minHeightForSplit = 400
 

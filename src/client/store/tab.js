@@ -497,6 +497,44 @@ export default Store => {
     store.addTab(ntb)
   }
 
+  // switch to the next/previous layout, in layout menu order
+  Store.prototype.cycleLayout = function (diff = 1) {
+    const { store } = window
+    const keys = Object.keys(splitConfig)
+    const i = keys.indexOf(store.layout)
+    store.setLayout(keys[(i + diff + keys.length) % keys.length])
+  }
+
+  Store.prototype.moveToNextLayout = function (tab = window.store.currentTab) {
+    if (!tab) {
+      return
+    }
+    const { store } = window
+    if (store.layout === 'c1') {
+      store.setLayout('c2')
+    }
+    const maxBatch = Math.max(splitConfig[store.layout].children, 2)
+    const from = tab.batch
+    const to = (from + 1) % maxBatch
+    if (from === to) {
+      return
+    }
+    const target = store.tabs.find(t => t.id === tab.id)
+    if (!target) {
+      return
+    }
+    target.batch = to
+    // the source pane needs another active tab, or it renders empty
+    if (store[`activeTabId${from}`] === tab.id) {
+      const rest = store.tabs.filter(t => t.batch === from)
+      store[`activeTabId${from}`] = rest.length ? rest[rest.length - 1].id : ''
+    }
+    store[`activeTabId${to}`] = tab.id
+    store.activeTabId = tab.id
+    store.currentLayoutBatch = to
+    store.focus()
+  }
+
   // Spread tabs over the panes of a layout with more panes.
   // Only used when leaving the single layout: once more than one pane is on
   // screen the arrangement is the user's, and is left alone.

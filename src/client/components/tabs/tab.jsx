@@ -272,6 +272,10 @@ class Tab extends Component {
     )
   }
 
+  moveToNextLayout = () => {
+    window.store.moveToNextLayout(this.props.tab)
+  }
+
   cloneToNextLayout = () => {
     window.store.cloneToNextLayout(this.props.tab)
   }
@@ -330,6 +334,7 @@ class Tab extends Component {
     const reloadShortcut = this.getShortcut('app_reloadCurrentTab')
     const closeShortcut = this.getShortcut('app_closeCurrentTab')
     const cloneToNextShortcut = this.getShortcut('app_cloneToNextLayout')
+    const moveToNextShortcut = this.getShortcut('app_moveToNextLayout')
     const duplicateShortcut = this.getShortcut('app_duplicateTab')
     const reloadAllShortcut = this.getShortcut('app_reloadAll')
 
@@ -366,6 +371,12 @@ class Tab extends Component {
         icon: <iconsMap.CopyOutlined />,
         label: e('cloneToNextLayout'),
         extra: cloneToNextShortcut
+      },
+      {
+        key: 'moveToNextLayout',
+        icon: <iconsMap.ArrowRightOutlined />,
+        label: e('moveToNextLayout'),
+        extra: moveToNextShortcut
       },
       {
         key: 'doRename',
