@@ -618,10 +618,14 @@ export default Store => {
       if (store.currentLayoutBatch >= newBatchCount) {
         store.currentLayoutBatch = newBatchCount - 1
       }
-    } else if (redistribute && newBatchCount > prevBatchCount) {
+    } else if (
+      redistribute &&
+      store.config.autoDistributeTabs &&
+      newBatchCount > prevBatchCount
+    ) {
       store.distributeTabs(prevBatchCount, newBatchCount)
+      store.fixActiveTabIds(newBatchCount)
     }
-    store.fixActiveTabIds(newBatchCount)
     store.focus()
   }
 

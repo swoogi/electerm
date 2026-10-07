@@ -60,7 +60,8 @@ async function load () {
     toggleBroadcastInput: 'Toggle broadcast input',
     sessionStopped: 'Session stopped',
     pressEnterToCloseTab: 'Press <Enter> to close this tab',
-    pressRToRestart: 'Press <R> to restart the session'
+    pressRToRestart: 'Press <R> to restart the session',
+    autoDistributeTabs: 'Spread tabs over panes when switching to a layout with more panes'
   }
   window.translate = txt => {
     const lang = window.getLang()
