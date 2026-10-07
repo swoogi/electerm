@@ -36,6 +36,16 @@ export default () => {
       shortcut: 'shift+alt+/',
       shortcutMac: 'shift+alt+/'
     },
+    {
+      name: 'app_nextLayout',
+      shortcut: 'ctrl+alt+]',
+      shortcutMac: 'ctrl+alt+]'
+    },
+    {
+      name: 'app_prevLayout',
+      shortcut: 'ctrl+alt+[',
+      shortcutMac: 'ctrl+alt+['
+    },
     ...layoutShortcutKeys.map((key, i) => ({
       name: `app_layout${key}`,
       shortcut: `ctrl+alt+${i + 1}`,

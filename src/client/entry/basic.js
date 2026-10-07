@@ -54,7 +54,9 @@ async function load () {
   }
   // keys not yet in the electerm-locales package
   const fallbackText = {
-    moveToNextLayout: 'Move to next layout'
+    moveToNextLayout: 'Move to next layout',
+    nextLayout: 'Next layout',
+    prevLayout: 'Previous layout'
   }
   window.translate = txt => {
     const lang = window.getLang()

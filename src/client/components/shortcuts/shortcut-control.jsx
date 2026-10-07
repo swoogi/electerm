@@ -164,6 +164,16 @@ class ShortcutControl extends React.PureComponent {
     window.store.cloneToNextLayout()
   }, 500)
 
+  nextLayoutShortcut = throttle((e) => {
+    e.stopPropagation()
+    window.store.cycleLayout(1)
+  }, 300)
+
+  prevLayoutShortcut = throttle((e) => {
+    e.stopPropagation()
+    window.store.cycleLayout(-1)
+  }, 300)
+
   moveToNextLayoutShortcut = throttle((e) => {
     e.stopPropagation()
     window.store.moveToNextLayout()

@@ -496,6 +496,14 @@ export default Store => {
     store.addTab(ntb)
   }
 
+  // switch to the next/previous layout, in layout menu order
+  Store.prototype.cycleLayout = function (diff = 1) {
+    const { store } = window
+    const keys = Object.keys(splitConfig)
+    const i = keys.indexOf(store.layout)
+    store.setLayout(keys[(i + diff + keys.length) % keys.length])
+  }
+
   Store.prototype.moveToNextLayout = function (tab = window.store.currentTab) {
     if (!tab) {
       return
